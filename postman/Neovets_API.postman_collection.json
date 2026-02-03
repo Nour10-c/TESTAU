@@ -1,0 +1,76 @@
+{
+  "info": {
+    "name": "Neovets API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/auth/login",
+          "host": ["{{base_url}}"],
+          "path": ["auth", "login"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"Email_user\": \"test@gmail.com\",\n  \"Mot_passe\": \"12345\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.environment.set('token', jsonData.token);"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Get Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/users/profile",
+          "host": ["{{base_url}}"],
+          "path": ["users", "profile"]
+        }
+      }
+    },
+
+    {
+      "name": "Create Report",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/reports",
+          "host": ["{{base_url}}"],
+          "path": ["reports"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Bug login\",\n  \"description\": \"Login page error detected\"\n}"
+        }
+      }
+    }
+  ]
+}
